@@ -62,11 +62,8 @@ class Mqtt:
         self._base = cfg.base_topic
         self._client: aiomqtt.Client | None = None
         self._sent: dict[str, str] = {}  # topic -> last payload, to skip repeats
-        self._legacy_checked = False
         self._percent_seen: set[str] = set()
         self._mode_seen: set[str] = set()
-        self._legacy_uid: str | None = None
-        self._legacy_removed = 0
 
     async def __aenter__(self) -> Mqtt:
         c = self._cfg
@@ -172,10 +169,6 @@ class Mqtt:
             return
         b, prefix = self._base, self._cfg.ha_prefix
         uid = re.sub(r"\W+", "_", f"reefhub_{snap.serial}").lower()
-
-        if not self._legacy_checked:
-            self._legacy_checked = True
-            await self._clear_legacy(uid)
 
         avail = {
             "availability": [{"topic": f"{b}/status"}, {"topic": f"{b}/controller"}],
@@ -291,47 +284,12 @@ class Mqtt:
                 "icon": "mdi:close-octagon" if letter == "CANCEL" else "mdi:fish-food",
             })
 
-    async def _clear_legacy(self, uid: str) -> None:
-        """Remove entities left by an older single-device discovery layout.
-
-        Those carried the device identifier `uid` itself; the per-module
-        devices use `uid_<group>`, so the two never collide. Retained discovery
-        configs are read for a few seconds (the command loop does the matching,
-        since it owns the message stream) and each legacy one is blanked.
-        """
-        assert self._client is not None
-        topic = f"{self._cfg.ha_prefix}/+/+/config"
-        self._legacy_uid = uid
-        await self._client.subscribe(topic, qos=1)
-        await asyncio.sleep(4)
-        await self._client.unsubscribe(topic)
-        self._legacy_uid = None
-        if self._legacy_removed:
-            _LOG.info("removed %d old single-device entities; waiting for Home Assistant",
-                      self._legacy_removed)
-            await asyncio.sleep(3)  # let HA finish removing before the new ones arrive
-
-    async def _drop_if_legacy(self, topic: str, payload: Any) -> None:
-        try:
-            doc = json.loads(payload)
-            ids = doc["device"]["identifiers"]
-        except (ValueError, KeyError, TypeError):
-            return
-        if ids == [self._legacy_uid]:
-            assert self._client is not None
-            await self._client.publish(topic, b"", qos=1, retain=True)
-            self._legacy_removed += 1
-
     # -- commands -----------------------------------------------------------
 
     async def commands(self) -> AsyncIterator[Command]:
         assert self._client is not None
-        prefix = self._cfg.ha_prefix + "/"
         async for msg in self._client.messages:
             topic = str(msg.topic)
-            if self._legacy_uid and topic.startswith(prefix) and topic.endswith("/config"):
-                await self._drop_if_legacy(topic, msg.payload)
-                continue
             cmd = parse_command(self._base, topic, msg.payload)
             if cmd is not None:
                 yield cmd
