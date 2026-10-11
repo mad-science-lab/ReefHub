@@ -1,0 +1,535 @@
+title: ReefHub
+views:
+  - type: sections
+    max_columns: 4
+    sections:
+      # ---------------------------------------------------------------- water
+      - type: grid
+        cards:
+          - type: heading
+            heading: Water
+            heading_style: title
+            icon: mdi:waves
+          - type: gauge
+            entity: sensor.reefhub_apex_base_ac6l_tmp
+            name: Temperature
+            min: 72
+            max: 84
+            needle: true
+            grid_options:
+              columns: 6
+              rows: 3
+            segments:
+              - from: 72
+                color: '#e53935'
+              - from: 75
+                color: '#fb8c00'
+              - from: 76.5
+                color: '#43a047'
+              - from: 80
+                color: '#fb8c00'
+              - from: 82
+                color: '#e53935'
+          - type: gauge
+            entity: sensor.reefhub_apex_base_ac6l_ph
+            name: pH
+            min: 7.4
+            max: 8.8
+            needle: true
+            grid_options:
+              columns: 6
+              rows: 3
+            segments:
+              - from: 7.4
+                color: '#e53935'
+              - from: 7.8
+                color: '#fb8c00'
+              - from: 8.0
+                color: '#43a047'
+              - from: 8.4
+                color: '#fb8c00'
+              - from: 8.6
+                color: '#e53935'
+          - type: history-graph
+            title: Temperature and pH, 24 h
+            hours_to_show: 24
+            entities:
+              - sensor.reefhub_apex_base_ac6l_tmp
+              - sensor.reefhub_apex_base_ac6l_ph
+            grid_options:
+              columns: 12
+      # ------------------------------------------------------------ pumps/flow
+      - type: grid
+        cards:
+          - type: heading
+            heading: Pumps and flow
+            heading_style: title
+            icon: mdi:water-pump
+          - type: gauge
+            entity: sensor.reefhub_iota_4_returnpump_power
+            name: Return pump
+            unit: '%'
+            min: 0
+            max: 100
+            grid_options:
+              columns: 12
+              rows: 3
+          - type: custom:mushroom-select-card
+            entity: select.reefhub_iota_4_returnpump
+            name: Return Pump
+            icon: mdi:water-pump
+            secondary_info: state
+            icon_color: blue
+            grid_options:
+              columns: 12
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_mxm_3_vortech_mp10
+            primary: Vortech MP10
+            secondary: "{{ states('select.reefhub_mxm_3_vortech_mp10') }} · {{ states('sensor.reefhub_mxm_3_vortech_mp10_mode') }}"
+            icon: mdi:fan
+            icon_color: >-
+              {% if states('select.reefhub_mxm_3_vortech_mp10') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_mxm_3_vortech_mp10_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_mxm_3_skimmer
+            primary: Skimmer
+            secondary: "{{ states('select.reefhub_mxm_3_skimmer') }} · {{ states('sensor.reefhub_mxm_3_skimmer_mode') }}"
+            icon: mdi:chart-bubble
+            icon_color: >-
+              {% if states('select.reefhub_mxm_3_skimmer') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_mxm_3_skimmer_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_mxm_3_nero_3
+            primary: Nero 3
+            secondary: "{{ states('select.reefhub_mxm_3_nero_3') }}"
+            icon: mdi:fan
+            icon_color: >-
+              {% if states('select.reefhub_mxm_3_nero_3') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_mxm_3_nero_3_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_mxm_3_nero_3_6
+            primary: Nero 3 (6)
+            secondary: "{{ states('select.reefhub_mxm_3_nero_3_6') }}"
+            icon: mdi:fan
+            icon_color: >-
+              {% if states('select.reefhub_mxm_3_nero_3_6') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_mxm_3_nero_3_6_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+      # ----------------------------------------------------------------- feed
+      - type: grid
+        cards:
+          - type: heading
+            heading: Feed
+            heading_style: title
+            icon: mdi:fish
+          - type: tile
+            entity: button.reefhub_feed_feed_a
+            name: Feed A
+            icon: mdi:food-apple
+            tap_action:
+              action: perform-action
+              perform_action: button.press
+              target:
+                entity_id: button.reefhub_feed_feed_a
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: button.reefhub_feed_feed_b
+            name: Feed B
+            icon: mdi:food-apple
+            tap_action:
+              action: perform-action
+              perform_action: button.press
+              target:
+                entity_id: button.reefhub_feed_feed_b
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: button.reefhub_feed_feed_c
+            name: Feed C
+            icon: mdi:food-apple
+            tap_action:
+              action: perform-action
+              perform_action: button.press
+              target:
+                entity_id: button.reefhub_feed_feed_c
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: button.reefhub_feed_feed_d
+            name: Feed D
+            icon: mdi:food-apple
+            tap_action:
+              action: perform-action
+              perform_action: button.press
+              target:
+                entity_id: button.reefhub_feed_feed_d
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: button.reefhub_feed_cancel_feed
+            name: Cancel feed
+            icon: mdi:cancel
+            color: red
+            tap_action:
+              action: perform-action
+              perform_action: button.press
+              target:
+                entity_id: button.reefhub_feed_cancel_feed
+            grid_options:
+              columns: 12
+          - type: custom:mushroom-template-card
+            primary: Feed cycle
+            secondary: >-
+              {% set m = states('sensor.reefhub_feed_mode') %}
+              {% if m in ['OFF', 'unknown', 'unavailable'] %}Idle{% else %}Cycle {{ m }} · {{ states('sensor.reefhub_feed_time_remaining') | float(0) | round(0) | int }} s left{% endif %}
+            icon: mdi:fish
+            icon_color: >-
+              {% if states('sensor.reefhub_feed_mode') in ['OFF', 'unknown', 'unavailable'] %}grey{% else %}red{% endif %}
+            grid_options:
+              columns: 12
+      # ------------------------------------------------------------ power bar
+      - type: grid
+        cards:
+          - type: heading
+            heading: Power bar (EB832 #2)
+            heading_style: title
+            icon: mdi:power-socket-us
+          - type: custom:mushroom-template-card
+            primary: Total draw
+            secondary: >-
+              {{ [states('sensor.reefhub_eb832_2_refugeew')|float(0), states('sensor.reefhub_eb832_2_2_2_outletw')|float(0), states('sensor.reefhub_eb832_2_2_3_outletw')|float(0), states('sensor.reefhub_eb832_2_secondpwrw')|float(0), states('sensor.reefhub_eb832_2_autofeedmixw')|float(0), states('sensor.reefhub_eb832_2_autofeederw')|float(0), states('sensor.reefhub_eb832_2_heater50ww')|float(0), states('sensor.reefhub_eb832_2_heater200w')|float(0)] | sum | round(0) | int }} W · {{ states('sensor.reefhub_eb832_2_volt_2') | float(0) | round(0) | int }} V
+            icon: mdi:flash
+            icon_color: yellow
+            grid_options:
+              columns: 12
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_eb832_2_refugee
+            primary: Refugee
+            secondary: "{{ states('select.reefhub_eb832_2_refugee') }} · {{ states('sensor.reefhub_eb832_2_refugeew') | float(0) | round(0) | int }} W"
+            icon: mdi:sprout
+            icon_color: >-
+              {% if states('select.reefhub_eb832_2_refugee') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_eb832_2_refugee_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_eb832_2_2_2_outlet
+            primary: Outlet 2-2
+            secondary: "{{ states('select.reefhub_eb832_2_2_2_outlet') }} · {{ states('sensor.reefhub_eb832_2_2_2_outletw') | float(0) | round(0) | int }} W"
+            icon: mdi:power-socket-us
+            icon_color: >-
+              {% if states('select.reefhub_eb832_2_2_2_outlet') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_eb832_2_2_2_outlet_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_eb832_2_2_3_outlet
+            primary: Outlet 2-3
+            secondary: "{{ states('select.reefhub_eb832_2_2_3_outlet') }} · {{ states('sensor.reefhub_eb832_2_2_3_outletw') | float(0) | round(0) | int }} W"
+            icon: mdi:power-socket-us
+            icon_color: >-
+              {% if states('select.reefhub_eb832_2_2_3_outlet') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_eb832_2_2_3_outlet_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_eb832_2_secondpwr
+            primary: Second Power
+            secondary: "{{ states('select.reefhub_eb832_2_secondpwr') }} · {{ states('sensor.reefhub_eb832_2_secondpwrw') | float(0) | round(0) | int }} W"
+            icon: mdi:power-socket-us
+            icon_color: >-
+              {% if states('select.reefhub_eb832_2_secondpwr') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_eb832_2_secondpwr_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_eb832_2_autofeedmix
+            primary: AutoFeed Mix
+            secondary: "{{ states('select.reefhub_eb832_2_autofeedmix') }} · {{ states('sensor.reefhub_eb832_2_autofeedmixw') | float(0) | round(0) | int }} W"
+            icon: mdi:blender
+            icon_color: >-
+              {% if states('select.reefhub_eb832_2_autofeedmix') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_eb832_2_autofeedmix_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_eb832_2_autofeeder
+            primary: AutoFeeder
+            secondary: "{{ states('select.reefhub_eb832_2_autofeeder') }} · {{ states('sensor.reefhub_eb832_2_autofeederw') | float(0) | round(0) | int }} W"
+            icon: mdi:fish
+            icon_color: >-
+              {% if states('select.reefhub_eb832_2_autofeeder') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_eb832_2_autofeeder_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_eb832_2_heater50w
+            primary: Heater 50 W
+            secondary: "{{ states('select.reefhub_eb832_2_heater50w') }} · {{ states('sensor.reefhub_eb832_2_heater50ww') | float(0) | round(0) | int }} W"
+            icon: mdi:heat-wave
+            icon_color: >-
+              {% if states('select.reefhub_eb832_2_heater50w') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_eb832_2_heater50w_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_eb832_2_heater200
+            primary: Heater 200 W
+            secondary: "{{ states('select.reefhub_eb832_2_heater200') }} · {{ states('sensor.reefhub_eb832_2_heater200w') | float(0) | round(0) | int }} W"
+            icon: mdi:radiator
+            icon_color: >-
+              {% if states('select.reefhub_eb832_2_heater200') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_eb832_2_heater200_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: history-graph
+            title: Heater draw, 24 h
+            hours_to_show: 24
+            entities:
+              - sensor.reefhub_eb832_2_heater50ww
+              - sensor.reefhub_eb832_2_heater200w
+            grid_options:
+              columns: 12
+      # ------------------------------------------------------------- lighting
+      - type: grid
+        cards:
+          - type: heading
+            heading: Lighting
+            heading_style: title
+            icon: mdi:lightbulb-group
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_mxm_3_radion
+            primary: Radion
+            secondary: "{{ states('select.reefhub_mxm_3_radion') }}"
+            icon: mdi:led-strip-variant
+            icon_color: >-
+              {% if states('select.reefhub_mxm_3_radion') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_mxm_3_radion_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_mxm_3_radion_3_3
+            primary: Radion 2
+            secondary: "{{ states('select.reefhub_mxm_3_radion_3_3') }}"
+            icon: mdi:led-strip-variant
+            icon_color: >-
+              {% if states('select.reefhub_mxm_3_radion_3_3') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_mxm_3_radion_3_3_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_mxm_3_lunar
+            primary: Lunar
+            secondary: "{{ states('select.reefhub_mxm_3_lunar') }}"
+            icon: mdi:weather-night
+            icon_color: >-
+              {% if states('select.reefhub_mxm_3_lunar') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_mxm_3_lunar_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+          - type: custom:mushroom-template-card
+            entity: select.reefhub_mxm_3_lunar_3_67
+            primary: Lunar 2
+            secondary: "{{ states('select.reefhub_mxm_3_lunar_3_67') }}"
+            icon: mdi:weather-night
+            icon_color: >-
+              {% if states('select.reefhub_mxm_3_lunar_3_67') | lower != 'auto' %}orange
+              {% elif is_state('binary_sensor.reefhub_mxm_3_lunar_3_67_energized', 'on') %}green
+              {% else %}grey{% endif %}
+            tap_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 2
+      # --------------------------------------------------------------- alarms
+      - type: grid
+        cards:
+          - type: heading
+            heading: Alarms and sensors
+            heading_style: title
+            icon: mdi:bell-alert
+          - type: custom:mushroom-template-card
+            primary: Email alarm
+            secondary: "{{ 'TRIGGERED' if is_state('binary_sensor.reefhub_apex_base_ac6l_emailalm_i5_energized', 'on') else 'OK' }}"
+            icon: mdi:email-alert
+            icon_color: "{{ 'red' if is_state('binary_sensor.reefhub_apex_base_ac6l_emailalm_i5_energized', 'on') else 'green' }}"
+            grid_options:
+              columns: 6
+          - type: custom:mushroom-template-card
+            primary: Sound alarm
+            secondary: "{{ 'TRIGGERED' if is_state('binary_sensor.reefhub_apex_base_ac6l_sndalm_i6_energized', 'on') else 'OK' }}"
+            icon: mdi:alarm-light
+            icon_color: "{{ 'red' if is_state('binary_sensor.reefhub_apex_base_ac6l_sndalm_i6_energized', 'on') else 'green' }}"
+            grid_options:
+              columns: 6
+          - type: custom:mushroom-template-card
+            primary: Sound warning
+            secondary: "{{ 'TRIGGERED' if is_state('binary_sensor.reefhub_apex_base_ac6l_sndwrn_i7_energized', 'on') else 'OK' }}"
+            icon: mdi:alert
+            icon_color: "{{ 'orange' if is_state('binary_sensor.reefhub_apex_base_ac6l_sndwrn_i7_energized', 'on') else 'green' }}"
+            grid_options:
+              columns: 6
+          - type: custom:mushroom-template-card
+            primary: FMM alarm
+            secondary: "{{ 'TRIGGERED' if is_state('binary_sensor.reefhub_fmm_1_alarm_1_2_energized', 'on') else 'OK' }}"
+            icon: mdi:alert-circle
+            icon_color: "{{ 'red' if is_state('binary_sensor.reefhub_fmm_1_alarm_1_2_energized', 'on') else 'green' }}"
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: binary_sensor.reefhub_fmm_1_lvl_l
+            name: Level (low)
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: binary_sensor.reefhub_fmm_1_sumphi
+            name: Sump high
+            grid_options:
+              columns: 6
+      # ---------------------------------------------------------- Jacq plugs
+      - type: grid
+        cards:
+          - type: heading
+            heading: Jacq's Plugs
+          - type: tile
+            entity: switch.jacq_plug02
+          - type: tile
+            entity: switch.jacq_plug01
+          - type: tile
+            entity: light.reef_cabinet_light
+          - type: tile
+            entity: switch.shellyswitch01_shellyswitch01
+            features:
+              - type: toggle
+    badges:
+      - type: custom:mushroom-template-badge
+        content: Feed A
+        icon: mdi:food-apple
+        color: red
+        entity: button.reefhub_feed_feed_a
+        tap_action:
+          action: perform-action
+          perform_action: button.press
+          target:
+            entity_id: button.reefhub_feed_feed_a
+          data: {}
+      - type: custom:mushroom-template-badge
+        content: Feed B
+        icon: mdi:food-apple
+        color: red
+        entity: button.reefhub_feed_feed_b
+        tap_action:
+          action: perform-action
+          perform_action: button.press
+          target:
+            entity_id: button.reefhub_feed_feed_b
+          data: {}
+      - type: custom:mushroom-template-badge
+        content: Feed C
+        icon: mdi:food-apple
+        color: red
+        entity: button.reefhub_feed_feed_c
+        tap_action:
+          action: perform-action
+          perform_action: button.press
+          target:
+            entity_id: button.reefhub_feed_feed_c
+          data: {}
+      - type: custom:mushroom-template-badge
+        content: Feed D
+        icon: mdi:food-apple
+        color: red
+        entity: button.reefhub_feed_feed_d
+        tap_action:
+          action: perform-action
+          perform_action: button.press
+          target:
+            entity_id: button.reefhub_feed_feed_d
+          data: {}
+      - type: custom:mushroom-template-badge
+        entity: sensor.reefhub_feed_time_remaining
+        icon: mdi:fish
+        color: red
+        label: Feed ends at
+        content: "{{ states('sensor.reefhub_feed_time_remaining') }}"
+        visibility:
+          - condition: state
+            entity: sensor.reefhub_feed_time_remaining
+            state_not:
+              - unavailable
+              - unknown
+        tap_action:
+          action: perform-action
+          perform_action: button.press
+          target:
+            entity_id: button.reefhub_feed_cancel_feed
+          data: {}

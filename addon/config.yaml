@@ -1,0 +1,27 @@
+# Home Assistant add-on manifest for ReefHub.
+name: ReefHub
+version: "0.1.0"
+slug: reefhub
+description: Neptune Apex to MQTT - read everything, switch outlets Off/Auto/On, trigger feed modes
+url: https://github.com/mad-science-lab/ReefHub
+arch:
+  - aarch64
+  - amd64
+init: false
+startup: services
+boot: auto
+# Broker credentials come from the Supervisor - no manual MQTT setup.
+services:
+  - mqtt:need
+options:
+  apex_host: "http://192.168.1.199"
+  apex_username: admin
+  apex_password: ""
+  poll_seconds: 15
+  log_level: INFO
+schema:
+  apex_host: str
+  apex_username: str
+  apex_password: password
+  poll_seconds: int(5,300)
+  log_level: list(DEBUG|INFO|WARNING|ERROR)

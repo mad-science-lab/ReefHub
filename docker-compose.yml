@@ -1,0 +1,16 @@
+services:
+  reefhub:
+    build: .
+    container_name: reefhub
+    restart: unless-stopped
+    environment:
+      APEX_HOST: http://192.168.1.50       # your Apex's address
+      APEX_USERNAME: admin
+      APEX_PASSWORD: CHANGE_ME
+      MQTT_HOST: 192.168.1.10              # your broker
+      # MQTT_PORT: 1883
+      # MQTT_USERNAME: ""
+      # MQTT_PASSWORD: ""
+      # MQTT_BASE_TOPIC: reefhub
+      # POLL_SECONDS: 15
+      # HA_DISCOVERY: "true"               # "false" if you only use Node-RED

@@ -1,0 +1,4 @@
+# Base images per architecture - newer Supervisors don't inject a default BUILD_FROM.
+build_from:
+  aarch64: ghcr.io/home-assistant/aarch64-base:3.21
+  amd64: ghcr.io/home-assistant/amd64-base:3.21
